@@ -1,2 +1,3 @@
 Politico.eu
 TheRegister
+The New Stack
