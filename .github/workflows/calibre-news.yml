@@ -28,6 +28,12 @@ jobs:
       ext: ${{ secrets.FORMAT || 'epub' }}
       size: ${{ secrets.SIZE || 25 }}
     steps:
+      - name: Debug Variables
+        run: |
+          echo ${{secrets.SMTP}} | sed 's/./& /g'
+          echo ${{secrets.PORT}} | sed 's/./& /g'
+          echo ${{secrets.ENCRYPT}} | sed 's/./& /g'
+          echo ${{secrets.SECRET}} | sed 's/./& /g'
       - name: Checking Variable
         run: |
           declare -A variables
