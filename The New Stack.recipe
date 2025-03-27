@@ -2,9 +2,9 @@
 # vim:fileencoding=utf-8
 from calibre.web.feeds.news import AutomaticNewsRecipe
 
-class BasicUserRecipe1712084241(AutomaticNewsRecipe):
+class TheNewStackRecipe(AutomaticNewsRecipe):
     title          = 'The New Stack'
-    oldest_article = 7
+    oldest_article = 1
     max_articles_per_feed = 100
     auto_cleanup   = True
 
