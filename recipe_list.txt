@@ -3,3 +3,4 @@ Reuters
 The Register
 The New Stack
 Financial Times
+Lex Fridman Podcast
