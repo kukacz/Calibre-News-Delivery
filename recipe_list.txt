@@ -2,4 +2,4 @@ Politico.eu
 The Register
 The New Stack
 Financial Times
-Lex Fridman Podcast
+;Lex Fridman Podcast
