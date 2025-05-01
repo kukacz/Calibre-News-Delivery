@@ -141,8 +141,10 @@ jobs:
               "$from" "$to" "Deliver \"${title}\""
           done < <(find "$output" -type f -name "*.${ext,,}" -print0)
           echo "All jobs done"
+        continue-on-error: true # Allow this step to fail without stopping the workflow
+
       - name: Upload to Dropbox
-        if: ${{ success() }}
+        if: ${{ always() }} # Ensure this step runs even if the previous one fails
         run: |
           echo "Uploading files to Dropbox..."
           for file in ${{ env.output }}/*; do
