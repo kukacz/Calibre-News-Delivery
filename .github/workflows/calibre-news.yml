@@ -143,7 +143,7 @@ jobs:
               --header "Authorization: Bearer ${{ secrets.DROPBOX_ACCESS_TOKEN }}" \
               --header "Dropbox-API-Arg: {\"path\": \"/Calibre-News-Delivery/${filename}\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
               --header "Content-Type: application/octet-stream" \
-              --data-binary @"${filename}"
+              --data-binary @"${ebook_path}"
           done < <(find "$output" -type f -name "*.${ext,,}" -print0)
           echo "All jobs done"
       - name: Storing Ebook
