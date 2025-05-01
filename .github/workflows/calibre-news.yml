@@ -27,6 +27,7 @@ jobs:
       to: ${{ secrets.TO }}
       ext: ${{ secrets.FORMAT || 'epub' }}
       size: ${{ secrets.SIZE || 25 }}
+      dropbox_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
     steps:
       - name: Checking Variable
         run: |
@@ -34,7 +35,7 @@ jobs:
           declare -a absences
           variables=(
             'SMTP' "$relay" 'PORT' "$port" 'ENCRYPT' "$encrypt"
-            'SECRET' "$secret" 'FROM' "$from" 'TO' "$to")
+            'SECRET' "$secret" 'FROM' "$from" 'TO' "$to" 'DROPBOX_TOKEN' "$dropbox_token")
           for key in ${!variables[@]}; do
             variable=${variables[$key]}
             [ -n "$variable" ] || absences+=($key)
@@ -140,6 +141,13 @@ jobs:
               "$from" "$to" "Deliver \"${title}\""
           done < <(find "$output" -type f -name "*.${ext,,}" -print0)
           echo "All jobs done"
+      - name: Upload to Dropbox
+        if: ${{ success() }}
+        uses: dropbox/github-action@v1
+        with:
+          DROPBOX_ACCESS_TOKEN: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
+          LOCAL_FILE: ${{ env.output }}/* # Path to the local files
+          DROPBOX_DESTINATION: /Calibre-News-Delivery/ # Path in Dropbox
       - name: Storing Ebook
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
