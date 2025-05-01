@@ -136,25 +136,16 @@ jobs:
               continue
             fi
             echo "Sending: \"$filename\""
-            calibre-smtp -a "$ebook_path" -r "$relay" --port="$port" \
-              -e "${encrypt^^}" -u "$from" -p "$secret" -s "$title" \
-              "$from" "$to" "Deliver \"${title}\""
-          done < <(find "$output" -type f -name "*.${ext,,}" -print0)
-          echo "All jobs done"
-        continue-on-error: true # Allow this step to fail without stopping the workflow
-
-      - name: Upload to Dropbox
-        if: ${{ always() }} # Ensure this step runs even if the previous one fails
-        run: |
-          echo "Uploading files to Dropbox..."
-          for file in ${{ env.output }}/*; do
+            # calibre-smtp -a "$ebook_path" -r "$relay" --port="$port" \
+            #   -e "${encrypt^^}" -u "$from" -p "$secret" -s "$title" \
+            #   "$from" "$to" "Deliver \"${title}\""
             curl -X POST https://content.dropboxapi.com/2/files/upload \
               --header "Authorization: Bearer ${{ secrets.DROPBOX_ACCESS_TOKEN }}" \
-              --header "Dropbox-API-Arg: {\"path\": \"/Calibre-News-Delivery/$(basename $file)\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
+              --header "Dropbox-API-Arg: {\"path\": \"/Calibre-News-Delivery/${filename}\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
               --header "Content-Type: application/octet-stream" \
-              --data-binary @"$file"
-          done
-          echo "Upload complete"
+              --data-binary @"${filename}"
+          done < <(find "$output" -type f -name "*.${ext,,}" -print0)
+          echo "All jobs done"
       - name: Storing Ebook
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
