@@ -149,7 +149,7 @@ jobs:
             #  --header "Dropbox-API-Arg: {\"path\": \"/Calibre-News-Delivery/${filename}\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
             #  --header "Content-Type: application/octet-stream" \
             #  --data-binary @"${ebook_path}"
-            rclone copy ${ebook_path} dropbox:/Calibre-News-Delivery/
+            rclone copy "${ebook_path}" dropbox:/Calibre-News-Delivery/
           done < <(find "$output" -type f -name "*.${ext,,}" -print0)
           echo "All jobs done"
       - name: Storing Ebook
