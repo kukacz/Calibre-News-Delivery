@@ -44,6 +44,10 @@ jobs:
             variable_keys=$(echo ${absences[@]/%/,})
             echo "Missing variable(s): ${variable_keys/%,/}"; exit 1
           fi
+      - name: Setup Rclone
+        uses: AnimMouse/setup-rclone@v1
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
       - name: Set up Python
         if: ${{ success() }}
         uses: actions/setup-python@v5
@@ -124,10 +128,6 @@ jobs:
           if [ $count -eq 0 ]; then
             echo 'No ebook needs send'; exit 1
           fi
-      - name: Setup Rclone
-        uses: AnimMouse/setup-rclone@v1
-        with:
-          rclone_config: ${{ secrets.RCLONE_CONFIG }}
       # - run: rclone copy source:sourcepath dest:destpath
       - name: Sending Ebook
         if: ${{ success() }}
