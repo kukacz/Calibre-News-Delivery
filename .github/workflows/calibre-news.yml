@@ -141,14 +141,9 @@ jobs:
               continue
             fi
             echo "Sending: \"$filename\""
-            # calibre-smtp -a "$ebook_path" -r "$relay" --port="$port" \
-            #   -e "${encrypt^^}" -u "$from" -p "$secret" -s "$title" \
-            #   "$from" "$to" "Deliver \"${title}\""
-            #curl -X POST https://content.dropboxapi.com/2/files/upload \
-            #  --header "Authorization: Bearer ${{ secrets.DROPBOX_ACCESS_TOKEN }}" \
-            #  --header "Dropbox-API-Arg: {\"path\": \"/Calibre-News-Delivery/${filename}\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
-            #  --header "Content-Type: application/octet-stream" \
-            #  --data-binary @"${ebook_path}"
+            calibre-smtp -a "$ebook_path" -r "$relay" --port="$port" \
+              -e "${encrypt^^}" -u "$from" -p "$secret" -s "$title" \
+              "$from" "$to" "Deliver \"${title}\""
             rclone copy "${ebook_path}" dropbox:/Calibre-News-Delivery/
           done < <(find "$output" -type f -name "*.${ext,,}" -print0)
           echo "All jobs done"
