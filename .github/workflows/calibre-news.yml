@@ -124,8 +124,16 @@ jobs:
           if [ $count -eq 0 ]; then
             echo 'No ebook needs send'; exit 1
           fi
+      # - name: Setup Rclone
+      #   uses: AnimMouse/setup-rclone@v1
+      #   with:
+      #     rclone_config: ${{ secrets.RCLONE_CONFIG }}
+      # - run: rclone copy source:sourcepath dest:destpath
       - name: Sending Ebook
         if: ${{ success() }}
+        uses: AnimMouse/setup-rclone@v1
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
         run: |
           while read -d '' ebook_path; do
             filename="$(basename "$ebook_path")"
@@ -136,14 +144,15 @@ jobs:
               continue
             fi
             echo "Sending: \"$filename\""
-            calibre-smtp -a "$ebook_path" -r "$relay" --port="$port" \
-              -e "${encrypt^^}" -u "$from" -p "$secret" -s "$title" \
-              "$from" "$to" "Deliver \"${title}\""
+            # calibre-smtp -a "$ebook_path" -r "$relay" --port="$port" \
+            #   -e "${encrypt^^}" -u "$from" -p "$secret" -s "$title" \
+            #   "$from" "$to" "Deliver \"${title}\""
             #curl -X POST https://content.dropboxapi.com/2/files/upload \
             #  --header "Authorization: Bearer ${{ secrets.DROPBOX_ACCESS_TOKEN }}" \
             #  --header "Dropbox-API-Arg: {\"path\": \"/Calibre-News-Delivery/${filename}\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
             #  --header "Content-Type: application/octet-stream" \
             #  --data-binary @"${ebook_path}"
+            rclone copy ${ebook_path} dropbox:/Calibre-News-Delivery/
           done < <(find "$output" -type f -name "*.${ext,,}" -print0)
           echo "All jobs done"
       - name: Storing Ebook
@@ -153,3 +162,8 @@ jobs:
           name: Calibre-News-Delivery
           path: ${{ env.output }}
           retention-days: ${{ secrets.DAYS || 90 }}
+      - name: Update Rclone config
+        uses: AnimMouse/setup-rclone/update-config@v1
+        with:
+          rclone_config_secret_name: RCLONE_CONFIG
+          token: ${{ secrets.GH_PAT }}
