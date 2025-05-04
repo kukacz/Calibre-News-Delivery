@@ -124,16 +124,13 @@ jobs:
           if [ $count -eq 0 ]; then
             echo 'No ebook needs send'; exit 1
           fi
-      # - name: Setup Rclone
-      #   uses: AnimMouse/setup-rclone@v1
-      #   with:
-      #     rclone_config: ${{ secrets.RCLONE_CONFIG }}
-      # - run: rclone copy source:sourcepath dest:destpath
-      - name: Sending Ebook
-        if: ${{ success() }}
+      - name: Setup Rclone
         uses: AnimMouse/setup-rclone@v1
         with:
           rclone_config: ${{ secrets.RCLONE_CONFIG }}
+      # - run: rclone copy source:sourcepath dest:destpath
+      - name: Sending Ebook
+        if: ${{ success() }}
         run: |
           while read -d '' ebook_path; do
             filename="$(basename "$ebook_path")"
