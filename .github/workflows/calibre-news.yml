@@ -128,7 +128,15 @@ jobs:
           if [ $count -eq 0 ]; then
             echo 'No ebook needs send'; exit 1
           fi
-      # - run: rclone copy source:sourcepath dest:destpath
+      - name: Save to Dropbox
+        if: ${{ success() }}
+        run: |
+          while read -d '' ebook_path; do
+            filename="$(basename "$ebook_path")"
+            echo "Saving to Dropbox: \"$filename\""
+            rclone copy "${ebook_path}" dropbox:/Calibre-News-Delivery/
+          done < <(find "$output" -type f -name "*.${ext,,}" -print0)
+          echo "All jobs done"
       - name: Sending Ebook
         if: ${{ success() }}
         run: |
@@ -144,7 +152,7 @@ jobs:
             calibre-smtp -a "$ebook_path" -r "$relay" --port="$port" \
               -e "${encrypt^^}" -u "$from" -p "$secret" -s "$title" \
               "$from" "$to" "Deliver \"${title}\""
-            rclone copy "${ebook_path}" dropbox:/Calibre-News-Delivery/
+            sleep 30
           done < <(find "$output" -type f -name "*.${ext,,}" -print0)
           echo "All jobs done"
       - name: Storing Ebook
