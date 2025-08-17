@@ -26,7 +26,7 @@ jobs:
       from: ${{ secrets.FROM }}
       to: ${{ secrets.TO }}
       ext: ${{ secrets.FORMAT || 'epub' }}
-      size: ${{ secrets.SIZE || 25 }}
+      size: ${{ secrets.SIZE || 50 }}
       dropbox_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
     steps:
       - name: Checking Variable
