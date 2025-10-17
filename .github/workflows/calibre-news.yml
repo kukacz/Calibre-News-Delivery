@@ -146,7 +146,8 @@ jobs:
           rclone_config_secret_name: RCLONE_CONFIG
           token: ${{ secrets.GH_PAT }}
       - name: Sending Ebook
-        if: ${{ steps.converting.outcome == 'success' }}
+        if: false
+        #if: ${{ steps.converting.outcome == 'success' }}
         run: |
           while read -d '' ebook_path; do
             filename="$(basename "$ebook_path")"
