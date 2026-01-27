@@ -27,7 +27,6 @@ jobs:
       to: ${{ secrets.TO }}
       ext: ${{ secrets.FORMAT || 'epub' }}
       size: ${{ secrets.SIZE || 50 }}
-      dropbox_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
     steps:
       - name: Checking Variable
         run: |
@@ -35,7 +34,7 @@ jobs:
           declare -a absences
           variables=(
             'SMTP' "$relay" 'PORT' "$port" 'ENCRYPT' "$encrypt"
-            'SECRET' "$secret" 'FROM' "$from" 'TO' "$to" 'DROPBOX_TOKEN' "$dropbox_token")
+            'SECRET' "$secret" 'FROM' "$from" 'TO' "$to")
           for key in ${!variables[@]}; do
             variable=${variables[$key]}
             [ -n "$variable" ] || absences+=($key)
@@ -129,18 +128,18 @@ jobs:
           if [ $count -eq 0 ]; then
             echo 'No ebook needs send'; exit 1
           fi
-      - name: Save to Dropbox
-        id: save_to_dropbox
+      - name: Save to OneDrive
+        id: save_to_onedrive
         if: ${{ steps.converting.outcome == 'success' }}
         run: |
           while read -d '' ebook_path; do
             filename="$(basename "$ebook_path")"
-            echo "Saving to Dropbox: \"$filename\""
-            rclone copy "${ebook_path}" dropbox:/Calibre-News-Delivery/
+            echo "Saving to OneDrive: \"$filename\""
+            rclone copy "${ebook_path}" onedrive:/Cteni/eBooks/noviny/Calibre-News-Delivery/
           done < <(find "$output" -type f -name "*.${ext,,}" -print0)
           echo "All jobs done"
       - name: Update Rclone config
-        if: ${{ steps.save_to_dropbox.outcome == 'success' }}
+        if: ${{ steps.save_to_onedrive.outcome == 'success' }}
         uses: AnimMouse/setup-rclone/update-config@v1
         with:
           rclone_config_secret_name: RCLONE_CONFIG
