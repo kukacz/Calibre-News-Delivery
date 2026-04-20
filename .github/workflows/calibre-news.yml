@@ -4,7 +4,8 @@ run-name: 'Calibre News Delivery: ${{ github.ref_name }}'
 on:
   workflow_dispatch:
   schedule:
-    - cron: '6 5,18 * * *'
+    - cron: '0 6,19 * * *'
+      timezone: 'Europe/Prague'
   # push:
   #   branches: ['master']
 
