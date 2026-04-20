@@ -7,4 +7,4 @@ Reuters
 The New York Times (Web)
 The Guardian and The Observer
 The Washington Post
-WSJ News
+The Wall Street Journal
