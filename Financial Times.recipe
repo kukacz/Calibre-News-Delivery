@@ -22,7 +22,7 @@ class ft(BasicNewsRecipe):
     __author__ = 'Kovid Goyal, unkn0wn'
     description = "The Financial Times is one of the world's leading news organisations, recognised internationally for its authority, integrity and accuracy."
     oldest_article = 1.5  # 36 hours (upstream default is 1.15 ~27.6 hours)
-    max_articles_per_feed = 50
+    max_articles_per_feed = 120
     no_stylesheets = True
     remove_javascript = True
     remove_empty_feeds = True
