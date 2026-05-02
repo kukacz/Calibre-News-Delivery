@@ -1,13 +1,27 @@
 #!/usr/bin/env python
 # vim:fileencoding=utf-8
+import re
 from calibre.web.feeds.news import AutomaticNewsRecipe
 
 class TheNewStackRecipe(AutomaticNewsRecipe):
     title          = 'The New Stack'
-    oldest_article = 7
+    oldest_article = 3
     max_articles_per_feed = 100
     auto_cleanup   = True
 
     feeds          = [
         ('The New Stack', 'https://thenewstack.io/blog/feed/'),
     ]
+
+    def get_description(self, node):
+        description_tag = node.find('description')
+        if description_tag:
+            desc = description_tag.string or ''
+            if desc:
+                # Remove images
+                desc = re.sub(r'<img[^>]*>', '', desc)
+                # Remove the "The post ... appeared first on ..." part
+                desc = re.sub(r'<p>The post.*?appeared first on.*?</p>', '', desc, flags=re.DOTALL | re.IGNORECASE)
+                # Return cleaned up text
+                return self.tag_to_string(self.index_to_soup(desc)).strip()
+        return ''
