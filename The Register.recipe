@@ -1,0 +1,18 @@
+from calibre.web.feeds.recipes import BasicNewsRecipe
+
+
+class TheRegister(BasicNewsRecipe):
+    title = 'The Register'
+    __author__ = 'vgrama (updated by kukacz)'
+    language = 'en'
+    description = 'Biting the hand that feeds IT - sci/tech news'
+
+    oldest_article = 2
+    max_articles_per_feed = 50
+    use_embedded_content = False
+    no_stylesheets = True
+    auto_cleanup = True
+
+    feeds = [
+        ('The Register', 'https://www.theregister.com/headlines.atom'),
+    ]
